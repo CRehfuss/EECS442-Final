@@ -1,10 +1,11 @@
 ## Claire Rehfuss
 ## Made for EECS 442 - Computer Vision
-
-import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('TkAgg')
+from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
-from Tkinter import Tk
-from tkFileDialog import askopenfilename
+from tkinter import Tk
+from tkinter.filedialog import askopenfilename
 from scipy.misc import imread
 from matplotlib.widgets import Button
 
@@ -44,8 +45,8 @@ class Annotate(object):
     # recognize the objects
     # Then closes all the matplotlib objects that are open
     def submit(self,event):
-        print self.boundedboxes
-        plt.close('all')
+        print(self.boundedboxes)
+        #plt.close('all')
 
 def main():
     """Create our Master class instantiation."""
