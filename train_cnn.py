@@ -4,10 +4,17 @@ from dataset import Dataset
 from model.build_cnn import cnn
 from train_common import *
 
+def report_test_accuracy(
+    sess, images, labels, keep_prob, acc, dataset):
+    batch_images, batch_labels = dataset.get_test()
+    test_acc = sess.run(acc,
+        feed_dict={images : batch_images, labels : batch_labels, keep_prob : 1})
+    print('TEST ACCURACY:', test_acc)
+
 def report_training_progress(
     sess, batch_index, images, labels, keep_prob, loss, acc, dataset):
     if batch_index % 50 == 0:
-        batch_images, batch_labels = dataset.get_test_batch(batch_size=512)
+        batch_images, batch_labels = dataset.get_valid_batch(batch_size=512)
         test_acc, test_loss = sess.run(
             [acc, loss],
             feed_dict={images : batch_images, labels : batch_labels, keep_prob : 1})
@@ -17,7 +24,7 @@ def report_training_progress(
 def train_cnn(
     sess, saver, save_path, images, labels, keep_prob, loss, train_op, acc, dataset):
     utils.make_training_plot()
-    for batch_index in range(10000):
+    for batch_index in range(1700):
         report_training_progress(
             sess, batch_index, images, labels, keep_prob, loss, acc, dataset)
         # Run one step of training
@@ -38,6 +45,7 @@ def main():
         sess.run(tf.global_variables_initializer())
         saver, save_path = utils.restore(sess, './checkpoints/cnn/')
         dataset = Dataset()
+        report_test_accuracy(sess, images, labels, keep_prob, acc, dataset)
         train_cnn(
             sess, saver, save_path, images,
             labels, keep_prob, loss, train_op, acc, dataset)

@@ -10,16 +10,22 @@ class Dataset:
         self.data = loadmat('lists.mat')['list']
         self.images = self._get_images()
         self.labels = np.asscalar(self.data['ALLlabels']-1).reshape(-1)
-        self.train_images, self.test_images, self.train_labels, self.test_labels = \
-            train_test_split(self.images, self.labels, test_size = 0.15)
+        self.train_images, self.valid_images, self.train_labels, self.valid_labels = \
+            train_test_split(self.images, self.labels, test_size = 0.25, random_state=1)
+        self.valid_images, self.test_images, self.valid_labels, self.test_labels = \
+            train_test_split(self.valid_images, self.valid_labels, test_size = 0.25, random_state=1)
+
 
     def get_train_batch(self, batch_size=32):
         idx = np.random.choice(len(self.train_images), size=batch_size, replace=False)
         return self.train_images[idx], self.train_labels[idx]
 
-    def get_test_batch(self, batch_size=32):
-        idx = np.random.choice(len(self.test_images), size=batch_size, replace=False)
-        return self.test_images[idx, :, :, :], self.test_labels[idx]    
+    def get_valid_batch(self, batch_size=32):
+        idx = np.random.choice(len(self.valid_images), size=batch_size, replace=False)
+        return self.valid_images[idx, :, :, :], self.valid_labels[idx]    
+
+    def get_test(self):
+        return self.test_images, self.test_labels   
 
     def _get_images(self):
         images = []
