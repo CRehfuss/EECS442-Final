@@ -63,7 +63,9 @@ class Annotate(object):
 
         word = ""
         count = 0
-        cropped_images = np.empty(shape=(4, 32, 32, 3))
+        n = len(self.boundedboxes)
+        n = n-1
+        cropped_images = np.empty(shape=(n, 32, 32, 3))
         for i in self.boundedboxes:
             if i[1]>1:
                 cropped_images[count,:,:,:] = crop_image(self.uploaded_image, i)
